@@ -12,6 +12,7 @@
         <link herf="style.css" rel="stylesheet">
 
         <h1>hi</h1>
+        <h1>i am nova</h1>
 </head>
 <body>
 
