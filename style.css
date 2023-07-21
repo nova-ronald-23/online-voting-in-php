@@ -2,6 +2,11 @@
 body {
   margin: 0;
   padding: 0;
+  background-image: url(image/back.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
 }
 
 .header {
@@ -15,4 +20,29 @@ body {
 .logo {
   max-height: 50px;
   margin-right: 10px;
+}
+.log{
+  display: flex;
+  align-items: center;
+      justify-content: center;
+      height: 100%;
+      margin: 0;
+}
+
+.login-box {
+ 
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  background-color: #cccccccc;
+}
+
+.login-box table td {
+  padding: 15px;
+  
+}
+
+.form-group {
+  margin-bottom: 20px;
 }
