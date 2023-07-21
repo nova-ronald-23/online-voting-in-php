@@ -1,17 +1,18 @@
-<html>
 <head>
-        <!-- bootstrap CSS Files -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="vendor/icofont/icofont.min.css" rel="stylesheet">
-    <link href="vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="vendor/animate.css/animate.min.css" rel="stylesheet">
-    <link href="vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="vendor/venobox/venobox.css" rel="stylesheet">
-
-        <!--  CSS Files -->
-        <link herf="style.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>index</title>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Add your custom CSS file here if needed -->
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-</body>
-<html>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <img src="image/logo.png" alt="Logo" class="logo">
+    <h1>St. Joseph's college</h1>
+  
+
+  </header>
