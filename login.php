@@ -2,24 +2,22 @@
 <html>
     <head></head>
     <body>
-    <?php include 'header.php';?>
-    <div class="log">
-    <div class="login-box">
-    <form>
-        <table><tr>
-        <div class="form-group">
-        <td><label for="dNumber">Deparment Number:</label></td>
-       <td> <input type="text" class="form-control" id="dNumber" placeholder="Enter your D No"></td>
-      </div></tr><tr>
-      <div class="form-group">
-      <td>  <label for="password">Password</label></td>
-        <td><input type="password" class="form-control" id="password" placeholder="Enter your password"></td>
-      </div></tr></table>
-<center><button type="submit" class="btn btn-primary">Login</button></center>
-
-    </form>
-  </div>
-</div>
-  <?php include 'footer.php';?>
+      <link rel="stylesheet" href="style.css">
+    <div class="wrapper">
+            <form action="">
+                <img src="image/logo.png" class="container text-center" style="padding-left: 90px; padding-bottom: 17px;">
+                <h1 style="font-family: Verdana, Geneva, Tahoma, sans-serif">Voting Login</h1>
+                <div class="input-box">
+                    <input type="text" placeholder="DNo" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" placeholder="Password" required>
+                    <i class='bx bxs-lock-alt' ></i>
+                </div>
+                
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
 </body>
 </html>
