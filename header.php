@@ -1,16 +1,43 @@
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>index</title>
-  <!-- Add Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
 
-<body>
-  <!-- Header -->
-  <header class="header">
-    <img src="image/logo.png" alt="Logo" class="logo">  
-    <h1>St. Joseph's college</h1>
-  
+<header id="header" class="header fixed-top d-flex align-items-center">
 
-  </header>
+<div class="d-flex align-items-center justify-content-between">
+  <a href="../" class="logo d-flex align-items-center">
+    <img src="image/logo.png" alt="">
+    <span class="d-none d-lg-block">SJC Online Voting </span>
+  </a>
+</div>
+<nav class="header-nav ms-auto">
+ 
+
+   
+    <li class="nav">
+
+      <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+      <img src="" alt="Profile" class="rounded-circle">
+        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $uname; ?></span>
+      </a><!-- End Profile Iamge Icon -->
+
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+        <li class="dropdown-header">
+          <h6><?php echo $regno; ?></h6>
+          <span><?php echo $position; ?></span>
+
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+
+        <li>
+          <a class="dropdown-item d-flex align-items-center" href="logout.php">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Sign Out</span>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+
+  </ul>
+</nav>
+
+</header>
