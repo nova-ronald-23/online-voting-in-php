@@ -14,7 +14,7 @@
     <li class="nav">
 
       <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-      <img src="" alt="Profile" class="rounded-circle">
+      <img src="<?php echo $userphoto; ?>" alt="Profile" class="rounded-circle">
         <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $uname; ?></span>
       </a><!-- End Profile Iamge Icon -->
 

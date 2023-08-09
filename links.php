@@ -14,3 +14,4 @@
 
   <!-- Main CSS File -->
   <link href="admin/assets/css/style.css" rel="stylesheet">
+  <link herf="style2.css" rel="stylesheet">
