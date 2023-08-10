@@ -6,7 +6,12 @@ html {
     font-family: "Poppins", sans-serif;
     height: 100vh;
   }
-  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust this value as needed */
+}
   a {
     color: #92badd;
     display:inline-block;
