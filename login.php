@@ -4,6 +4,20 @@ include 'admin/dbcon.php';
 // Variables to hold error messages
 $regnoError = $passwordError = '';
 
+// Check if the user has already voted
+if (isset($_SESSION['regno'])) {
+    $regno = $_SESSION['regno'];
+    
+    $checkVoteQuery = "SELECT votepolling FROM voterlist WHERE regno = '$regno' AND votepolling = 1";
+    $checkVoteResult = mysqli_query($conn, $checkVoteQuery);
+    
+    if ($checkVoteResult && mysqli_num_rows($checkVoteResult) > 0) {
+        // User has already voted, show alert message
+        echo "<script>alert('You have already cast your vote.'); window.location = 'logout.php';</script>";
+        exit();
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $regno = $_POST["regno"];
     $password = $_POST["password"];
