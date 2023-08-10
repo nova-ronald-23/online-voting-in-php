@@ -4,7 +4,7 @@
 <div class="d-flex align-items-center justify-content-between">
   <a href="adminindex.php" class="logo d-flex align-items-center">
     <img src="logo.png" alt="">
-    <span class="d-none d-lg-block">SJC Voting Admin</span>
+    <span class="d-none d-lg-block">SJC Admin</span>
   </a>
   <i class="bi bi-list toggle-sidebar-btn"></i>
 </div>

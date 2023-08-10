@@ -40,7 +40,7 @@
     <li class="nav-item">
         <a class="nav-link " href="adminindex.php">
         <i class="bi bi-grid"></i>
-        <span>Deshboard</span>
+        <span>Dashboard</span>
         </a>
     </li><!-- End Dashboard Nav -->
 
@@ -69,12 +69,12 @@
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-            <a href="">
+            <a href="nomenilistI.php">
             <i class="bi bi-circle"></i><span>Shitf I</span>
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="nomenilistII.php">
             <i class="bi bi-circle"></i><span>Shitf II</span>
             </a>
         </ul>

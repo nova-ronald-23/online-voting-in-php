@@ -21,7 +21,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="shiftII.php">
           <i class="bi bi-circle"></i><span>Shitf II</span>
         </a>
       </li>
@@ -35,12 +35,12 @@
     </a>
     <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="">
+        <a href="nomenilistI.php">
           <i class="bi bi-circle"></i><span>Shitf I</span>
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="nomenilistII.php">
           <i class="bi bi-circle"></i><span>Shitf II</span>
         </a>
     </ul>

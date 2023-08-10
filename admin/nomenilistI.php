@@ -1,4 +1,4 @@
-    <?php
+<?php
     session_start();
 
     include 'dbcon.php';
@@ -52,7 +52,7 @@
         </a>
         <ul id="components-nav" class="nav-content collapse show " data-bs-parent="#sidebar-nav">
         <li>
-            <a href="shiftI.php"  class="active">
+            <a href="shiftI.php"  >
             <i class="bi bi-circle"></i><span>Shitf I</span>
             </a>
         </li>
@@ -72,7 +72,7 @@
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
             <a href="nomenilistI.php">
-            <i class="bi bi-circle"></i><span>Shitf I</span>
+            <i class="bi bi-circle" class="active"></i><span>Shitf I</span>
             </a>
         </li>
         <li>
