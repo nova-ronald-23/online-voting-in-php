@@ -4,75 +4,85 @@ include 'admin/dbcon.php';
 // Variables to hold error messages
 $regnoError = $passwordError = '';
 
-// Check if the user has already voted
-if (isset($_SESSION['regno'])) {
-    $regno = $_SESSION['regno'];
-    
-    $checkVoteQuery = "SELECT votepolling FROM voterlist WHERE regno = '$regno' AND votepolling = 1";
-    $checkVoteResult = mysqli_query($conn, $checkVoteQuery);
-    
-    if ($checkVoteResult && mysqli_num_rows($checkVoteResult) > 0) {
-        // User has already voted, show alert message
-        echo "<script>alert('You have already cast your vote.'); window.location = 'logout.php';</script>";
-        exit();
-    }
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $regno = $_POST["regno"];
+    $regno = trim($_POST["regno"]);
     $password = $_POST["password"];
-    $stmt = $conn->prepare("SELECT id, regno, uname, position, userimage FROM users WHERE regno = ? AND password = ?");
-    if ($stmt === false) {
-        die("Prepare failed: " . $conn->error);
-    }
-      $stmt->bind_param("ss", $regno, $password);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows == 1) {
-        // Login successful
-        $stmt->bind_result($userId, $regno, $uname, $Position, $userimage);
-        $stmt->fetch();
+    
+    $thirdLetter = strtoupper($regno[2]);
+    
+    $stmt = null;
+    
 
-        $_SESSION['user_id'] = $userId;
-        $_SESSION['regno'] = $regno;
-        $_SESSION['uname'] = $uname; // Fixed: Added the 'uname' to the session
-        $_SESSION['position'] = $Position;
-        $_SESSION['userphoto'] = $userimage;
-
-        // Redirect the user based on their position
-        if ($Position == "admin") {
-            header("Location: admin/adminindex.php");
-            exit();
-        } elseif ($Position == "tech") {
-            header("Location: techdesh.php");
-            exit();
-        } elseif ($Position == "stud") {
-            header("Location: stud.php");
-            exit();
-        } else {
-            // Invalid position (optional: redirect to login page with an error message)
-            header("Location: login.php?error=1");
-            exit();
-        }
+    if ($thirdLetter == 'U') {
+        $voterQuery = "SELECT id, name, password, position,userimage FROM voterlist WHERE regno = ? AND password = ?";
+        $stmt = $conn->prepare($voterQuery);
+        echo "Using Voter Query<br>";
+    } elseif ($thirdLetter == 'A' || $thirdLetter == 'F') {
+        $userQuery = "SELECT id, uname, password, position, userimage FROM users WHERE regno = ? AND password = ?";
+        $stmt = $conn->prepare($userQuery);
+        echo "Using User Query<br>";
     } else {
-        // Check for invalid regno and password
-        $countStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE regno = ?");
-        if ($countStmt === false) {
-            die("Prepare failed: " . $conn->error);
-        }
-        $stmt->bind_param("s", $regno);
-        $stmt->execute();
-        $stmt->bind_result($count);
-        $stmt->fetch();
-
-        if ($count == 0) {
-            $regnoError = "Invalid Reg no";
-        } else {
-            $passwordError = "Invalid Password";
-        }
+        $stmt = false;
+        echo "Invalid Third Letter<br>";
     }
 
-    $stmt->close();
+    // Check if $stmt is not null and not false before executing
+    if ($stmt !== null && $stmt !== false) {
+        $stmt->bind_param("ss", $regno, $password);
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+        $stmt->store_result();
+    
+        if ($stmt->num_rows == 1) {
+            // Login successful
+            $stmt->bind_result($userId, $regno, $uname, $Position, $userimage);
+            $stmt->fetch();
+
+            $_SESSION['user_id'] = $userId;
+            $_SESSION['regno'] = $regno;
+            $_SESSION['uname'] = $uname;
+            $_SESSION['position'] = $Position;
+            $_SESSION['userphoto'] = $userimage;
+
+            // Redirect the user based on their position
+            if ($Position == "admin") {
+                header("Location: admin/adminindex.php");
+                exit();
+            } elseif ($Position == "tech") {
+                header("Location: techdesh.php");
+                exit();
+            } elseif ($Position == "stud") {
+                header("Location: stud.php");
+                exit();
+            } else {
+                // Invalid position (optional: redirect to login page with an error message)
+                header("Location: login.php?error=1");
+                exit();
+            }
+        } else {
+            // Check for invalid regno and password
+            $countStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE regno = ?");
+            if ($countStmt === false) {
+                die("Prepare failed: " . $conn->error);
+            }
+            $countStmt->bind_param("s", $regno);
+            $countStmt->execute();
+            $countStmt->bind_result($count);
+            $countStmt->fetch();
+
+            if ($count == 0) {
+                $regnoError = "Invalid Reg no";
+            } else {
+                $passwordError = "Invalid Password";
+            }
+
+            $countStmt->close();
+        }
+
+        $stmt->close();
+    }
+
 }
 
 $conn->close();
