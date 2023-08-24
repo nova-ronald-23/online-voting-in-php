@@ -21,21 +21,23 @@ if (isset($_SESSION['regno'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $regno = $_POST["regno"];
     $password = $_POST["password"];
-
-    $stmt = $conn->prepare("SELECT id, regno, uname, position, userphoto FROM users WHERE regno = ? AND password = ?");
-    $stmt->bind_param("ss", $regno, $password);
+    $stmt = $conn->prepare("SELECT id, regno, uname, position, userimage FROM users WHERE regno = ? AND password = ?");
+    if ($stmt === false) {
+        die("Prepare failed: " . $conn->error);
+    }
+      $stmt->bind_param("ss", $regno, $password);
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows == 1) {
         // Login successful
-        $stmt->bind_result($userId, $regno, $uname, $Position, $userPhoto);
+        $stmt->bind_result($userId, $regno, $uname, $Position, $userimage);
         $stmt->fetch();
 
         $_SESSION['user_id'] = $userId;
         $_SESSION['regno'] = $regno;
         $_SESSION['uname'] = $uname; // Fixed: Added the 'uname' to the session
         $_SESSION['position'] = $Position;
-        $_SESSION['userphoto'] = $userPhoto;
+        $_SESSION['userphoto'] = $userimage;
 
         // Redirect the user based on their position
         if ($Position == "admin") {
@@ -54,7 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         // Check for invalid regno and password
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE regno = ?");
+        $countStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE regno = ?");
+        if ($countStmt === false) {
+            die("Prepare failed: " . $conn->error);
+        }
         $stmt->bind_param("s", $regno);
         $stmt->execute();
         $stmt->bind_result($count);
