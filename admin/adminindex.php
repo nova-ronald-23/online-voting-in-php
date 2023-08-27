@@ -29,6 +29,9 @@ $regno = $_SESSION['regno'];
 $uname = $_SESSION['uname'];
 $position = $_SESSION['position'];
 $userPhoto = $_SESSION['userphoto'];
+
+
+
 ?>
  <?php include 'header.php'?>
 <?php include 'sidenav.php'?>

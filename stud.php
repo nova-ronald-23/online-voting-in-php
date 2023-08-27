@@ -3,7 +3,7 @@ session_start();
 include 'admin/dbcon.php';
 
 // Check if the necessary session variables are set
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['password']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto'])) {
     header("Location: login.php");
     exit();
 }
@@ -12,34 +12,42 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSI
 $user_id = $_SESSION['user_id'];
 $regno = $_SESSION['regno'];
 $uname = $_SESSION['uname'];
+$password = $_SESSION['password'];
 $position = $_SESSION['position'];
 $userPhoto = $_SESSION['userphoto'];
 
 $department = '';
 $shift = '';
 
-$userDataQuery = "SELECT departmentname, shift FROM voterlist WHERE regno = '$regno'";
-$userDataResult = mysqli_query($conn, $userDataQuery);
+// Retrieve user's department and shift
+$userDataQuery = "SELECT departmentname, shift FROM voterlist WHERE regno = ?";
+$userDataStmt = $conn->prepare($userDataQuery);
+$userDataStmt->bind_param("s", $regno);
 
+if (!$userDataStmt->execute()) {
+    die("User data retrieval failed: " . $userDataStmt->error);
+}
+
+$userDataResult = $userDataStmt->get_result();
 if ($userDataResult) {
-    $userData = mysqli_fetch_assoc($userDataResult);
+    $userData = $userDataResult->fetch_assoc();
     $department = $userData['departmentname'];
     $shift = $userData['shift'];
 } else {
-    die("User data retrieval failed: " . mysqli_error($conn));
+    die("User data retrieval failed");
 }
 
 // Fetch candidates who match department, shift, and nomination from the voterlist table
-$query = "SELECT v.name, v.userimage, v.regno FROM voterlist v
-          WHERE v.departmentname = '$department' AND v.shift = '$shift' AND v.nomenation = 1";
-$result = mysqli_query($conn, $query);
+$query = "SELECT name, userimage, regno FROM voterlist WHERE departmentname = ? AND shift = ? AND nomenation = 1";
+$resultStmt = $conn->prepare($query);
+$resultStmt->bind_param("ss", $department, $shift);
 
-if (!$result) {
-    die("Query failed: " . mysqli_error($conn));
+if (!$resultStmt->execute()) {
+    die("Query failed: " . $resultStmt->error);
 }
 
+$result = $resultStmt->get_result();
 ?>
-
 
 <html lang="en">
 <head>

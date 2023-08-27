@@ -5,7 +5,7 @@ include 'admin/dbcon.php';
 $regnoError = $passwordError = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $regno = trim($_POST["regno"]);
+    $regno = ($_POST["regno"]);
     $password = $_POST["password"];
     
     $thirdLetter = strtoupper($regno[2]);
@@ -26,37 +26,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Invalid Third Letter<br>";
     }
 
-    // Check if $stmt is not null and not false before executing
     if ($stmt !== null && $stmt !== false) {
+        // Bind the parameters here
         $stmt->bind_param("ss", $regno, $password);
+        
         if (!$stmt->execute()) {
             die("Execute failed: " . $stmt->error);
         }
         $stmt->store_result();
-    
+        
         if ($stmt->num_rows == 1) {
             // Login successful
-            $stmt->bind_result($userId, $regno, $uname, $Position, $userimage);
+            if ($thirdLetter == 'U') {
+                $stmt->bind_result($userId, $uname, $password, $position, $userimage);
+                echo "Using Voter Query<br>";
+            } elseif ($thirdLetter == 'A' || $thirdLetter == 'F') {
+                $stmt->bind_result($userId, $uname, $password, $position, $userimage);
+                echo "Using User Query<br>";
+            }
             $stmt->fetch();
-
+    
             $_SESSION['user_id'] = $userId;
             $_SESSION['regno'] = $regno;
             $_SESSION['uname'] = $uname;
-            $_SESSION['position'] = $Position;
+            $_SESSION['password'] = $password;
+            $_SESSION['position'] = $position;
             $_SESSION['userphoto'] = $userimage;
-
-            // Redirect the user based on their position
-            if ($Position == "admin") {
+            
+            if ($position == "admin") {
                 header("Location: admin/adminindex.php");
                 exit();
-            } elseif ($Position == "tech") {
+            } elseif ($position == "tech") {
                 header("Location: techdesh.php");
                 exit();
-            } elseif ($Position == "stud") {
+            } elseif ($position == "stud") {
                 header("Location: stud.php");
                 exit();
             } else {
-                // Invalid position (optional: redirect to login page with an error message)
                 header("Location: login.php?error=1");
                 exit();
             }
@@ -70,22 +76,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $countStmt->execute();
             $countStmt->bind_result($count);
             $countStmt->fetch();
-
+    
             if ($count == 0) {
                 $regnoError = "Invalid Reg no";
             } else {
                 $passwordError = "Invalid Password";
             }
-
+    
             $countStmt->close();
         }
-
+    
         $stmt->close();
     }
-
+    
+    $conn->close();
 }
 
-$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
