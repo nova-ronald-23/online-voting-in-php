@@ -1,26 +1,24 @@
 <?php
 session_start();
-include 'admin/dbcon.php'; 
-// Variables to hold error messages
+include 'admin/dbcon.php';
+
 $regnoError = $passwordError = '';
+$alreadyVotedMessage = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $regno = ($_POST["regno"]);
+    $regno = $_POST["regno"];
     $password = $_POST["password"];
-    
+
     $thirdLetter = strtoupper($regno[2]);
-    
+
     $stmt = null;
-    
 
     if ($thirdLetter == 'U') {
-        $voterQuery = "SELECT id, name, password, position,userimage FROM voterlist WHERE regno = ? AND password = ?";
+        $voterQuery = "SELECT id, name, password, position, userimage, votepolling FROM voterlist WHERE regno = ? AND password = ?";
         $stmt = $conn->prepare($voterQuery);
-        echo "Using Voter Query<br>";
     } elseif ($thirdLetter == 'A' || $thirdLetter == 'F') {
         $userQuery = "SELECT id, uname, password, position, userimage FROM users WHERE regno = ? AND password = ?";
         $stmt = $conn->prepare($userQuery);
-        echo "Using User Query<br>";
     } else {
         $stmt = false;
         echo "Invalid Third Letter<br>";
@@ -29,70 +27,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt !== null && $stmt !== false) {
         // Bind the parameters here
         $stmt->bind_param("ss", $regno, $password);
-        
+
         if (!$stmt->execute()) {
             die("Execute failed: " . $stmt->error);
         }
-        $stmt->store_result();
-        
-        if ($stmt->num_rows == 1) {
-            // Login successful
-            if ($thirdLetter == 'U') {
-                $stmt->bind_result($userId, $uname, $password, $position, $userimage);
-                echo "Using Voter Query<br>";
-            } elseif ($thirdLetter == 'A' || $thirdLetter == 'F') {
-                $stmt->bind_result($userId, $uname, $password, $position, $userimage);
-                echo "Using User Query<br>";
-            }
-            $stmt->fetch();
-    
-            $_SESSION['user_id'] = $userId;
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $_SESSION['user_id'] = $row['id'];
             $_SESSION['regno'] = $regno;
-            $_SESSION['uname'] = $uname;
+            $_SESSION['uname'] = $row['name'];
             $_SESSION['password'] = $password;
-            $_SESSION['position'] = $position;
-            $_SESSION['userphoto'] = $userimage;
+            $_SESSION['position'] = $row['position'];
+            $_SESSION['userphoto'] = $row['userimage'];
             
-            if ($position == "admin") {
-                header("Location: admin/adminindex.php");
-                exit();
-            } elseif ($position == "tech") {
-                header("Location: techdesh.php");
-                exit();
-            } elseif ($position == "stud") {
-                header("Location: stud.php");
-                exit();
+            if ($thirdLetter == 'U' && $row['votepolling'] == 1) {
+                $alreadyVotedMessage = "You have already polled your vote.";
             } else {
-                header("Location: login.php?error=1");
+                // Redirect based on position
+                if ($_SESSION['position'] == "admin") {
+                    header("Location: admin/adminindex.php");
+                } elseif ($_SESSION['position'] == "tech") {
+                    header("Location: techdesh.php");
+                } elseif ($_SESSION['position'] == "stud") {
+                    header("Location: stud.php");
+                } else {
+                    header("Location: login.php?error=1");
+                }
                 exit();
             }
         } else {
-            // Check for invalid regno and password
-            $countStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE regno = ?");
-            if ($countStmt === false) {
-                die("Prepare failed: " . $conn->error);
-            }
-            $countStmt->bind_param("s", $regno);
-            $countStmt->execute();
-            $countStmt->bind_result($count);
-            $countStmt->fetch();
-    
-            if ($count == 0) {
-                $regnoError = "Invalid Reg no";
-            } else {
-                $passwordError = "Invalid Password";
-            }
-    
-            $countStmt->close();
+            $regnoError = "Invalid Reg no or Password";
+            $passwordError = "Invalid Reg no or Password";
         }
-    
+
         $stmt->close();
     }
-    
+
     $conn->close();
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,22 +79,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="wrapper">
-        <form method="post">
-            <img src="image/logo.png" class="container text-center" style="padding-left: 90px; padding-bottom: 17px;">
-            <h1 style="font-family: Verdana, Geneva, Tahoma, sans-serif">Voting Login</h1>
-            <div class="input-box">
-                <input type="text" name="regno" placeholder="Reg no" required>
-                <i class='bx bxs-user'></i>
-                <?php echo $regnoError; ?>
-            </div>
-            <div class="input-box">
-                <input type="password" name="password" placeholder="Password" required>
-                <i class='bx bxs-lock-alt'></i>
-                <?php echo $passwordError; ?>
-            </div>
+        <?php if (!empty($alreadyVotedMessage)) { ?>
+            <p><?php echo $alreadyVotedMessage; ?></p>
+        <?php } else { ?>
+            <form method="post">
+                <img src="image/logo.png" class="container text-center" style="padding-left: 90px; padding-bottom: 17px;">
+                <h1 style="font-family: Verdana, Geneva, Tahoma, sans-serif">Voting Login</h1>
+                <div class="input-box">
+                    <input type="text" name="regno" placeholder="Reg no" required>
+                    <i class='bx bxs-user'></i>
+                    <?php echo $regnoError; ?>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <i class='bx bxs-lock-alt'></i>
+                    <?php echo $passwordError; ?>
+                </div>
 
-            <button type="submit" class="btn">Login</button>
-        </form>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        <?php } ?>
     </div>
 </body>
 </html>

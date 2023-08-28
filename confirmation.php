@@ -1,42 +1,37 @@
 <?php
+session_start();
 include 'admin/dbcon.php';
 
 $candidateName = $_GET['candidate_name'] ?? '';
-$voterName = $_GET['voter_name'] ?? '';
 $candidateDepartment = $_GET['candidate_department'] ?? '';
 $candidateRegno = $_GET['candidate_regno'] ?? '';
 $candidateShift = $_GET['candidate_shift'] ?? '';
+$voterName = $_SESSION['uname'] ?? '';
 
-$error = ''; // Initialize the error variable
-$voterResult = null; // Initialize the voterResult variable
-
+$error = ''; 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $voterPassword = $_POST['voter_password'];
     
-    // Retrieve the voter's data from the database
-    $voterQuery = "SELECT * FROM users WHERE uname = '$voterName' AND password = '$voterPassword'";
-    
-    // Debug: Output the voter query
+
+    $voterQuery = "SELECT * FROM voterlist WHERE name = '$voterName' AND password = '$voterPassword'";
+
     echo "Voter Query: $voterQuery<br>";
-    
+
     $voterResult = mysqli_query($conn, $voterQuery);
 
     if ($voterResult) {
+        echo "Number of rows returned: " . mysqli_num_rows($voterResult) . "<br>";
+
         if (mysqli_num_rows($voterResult) === 1) {
-            // Debug: Output success message
-            echo "Voter authentication successful!<br>";
-            
-            // Update votepoling value to 1
             $updateQuery = "UPDATE voterlist SET votepolling = 1 WHERE name = '$voterName'";
             $updateResult = mysqli_query($conn, $updateQuery);
 
             if ($updateResult) {
                 // Store voting details in a result table
-                $insertResultQuery = "INSERT INTO voting_results (candidate_name, voter_name, regno, department, shift) VALUES ('$candidateName', '$voterName', '$regno', '$department', '$shift')";
+                $insertResultQuery = "UPDATE voting_results SET votespolled = votespolled+1 WHERE candidate_name = '$candidateName'";
                 $insertResultResult = mysqli_query($conn, $insertResultQuery);
 
                 if ($insertResultResult) {
-                    // Perform other actions or redirections as needed
                     header("Location: popup.php");
                     exit();
                 } else {
@@ -46,23 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Update failed: " . mysqli_error($conn);
             }
         } else {
-            // Debug: Output unsuccessful message
             echo "Voter authentication unsuccessful.<br>";
-            
-            // Invalid voter's credentials
             $error = "Invalid voter's credentials";
         }
     } else {
-        // Debug: Output database error
         echo "Database Error: " . mysqli_error($conn) . "<br>";
-        
         $error = "Voter query failed: " . mysqli_error($conn);
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to SJC</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -81,13 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" id="password" class="fadeIn third" name="voter_password" placeholder="Voter password">
             <br><br>
             <button type="submit" class="btn btn-primary"> Confirm </button>
-       
+
             <?php if (!empty($error)) { ?>
                 <p class="error-message"><?php echo $error; ?></p>
             <?php } ?>
         </form>
-        <!-- Debug: Output the received voter name -->
-        <p>Received Voter Name: <?php echo $voterName; ?></p>
     </div>
 </div>
 </body>
