@@ -18,20 +18,47 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto']) ) {
+include 'dbcon.php';
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto'])) {
     header("Location: ../login.php");
     exit();
 }
 
-// Retrieve user data from the session
 $user_id = $_SESSION['user_id'];
 $regno = $_SESSION['regno'];
 $uname = $_SESSION['uname'];
 $position = $_SESSION['position'];
 $userPhoto = $_SESSION['userphoto'];
 
+$countQuery = "SELECT COUNT(*) AS total FROM voterlist";
+$countResult = mysqli_query($conn, $countQuery);
 
+$totalVote = 0; 
 
+if ($countResult && mysqli_num_rows($countResult) === 1) {
+    $row = mysqli_fetch_assoc($countResult);
+    $totalVote = $row['total'];
+}
+
+$votePolledQuery = "SELECT COUNT(*) AS votePolledCount FROM voterlist WHERE votepolling = 1";
+$votePolledResult = mysqli_query($conn, $votePolledQuery);
+
+$votePolledCount = 0; // Initialize the variable
+
+if ($votePolledResult && mysqli_num_rows($votePolledResult) === 1) {
+    $row = mysqli_fetch_assoc($votePolledResult);
+    $votePolledCount = $row['votePolledCount'];
+}
+$votetoPollQuery = "SELECT COUNT(*) AS votetoPollCount FROM voterlist WHERE votepolling = 0";
+$votetoPollResult = mysqli_query($conn, $votetoPollQuery);
+
+$votetoPollCount = 0; // Initialize the variable
+
+if ($votetoPollResult && mysqli_num_rows($votePolledResult) === 1) {
+    $row = mysqli_fetch_assoc($votetoPollResult);
+    $votetoPollCount = $row['votetoPollCount'];
+}
 ?>
  <?php include 'header.php'?>
 <?php include 'sidenav.php'?>
@@ -64,7 +91,7 @@ $userPhoto = $_SESSION['userphoto'];
                       <i class="bi bi-hand-index"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>145</h6>
+                      <h6><?php echo $votePolledCount; ?></h6>
                       
                     </div>
                   </div>
@@ -85,7 +112,7 @@ $userPhoto = $_SESSION['userphoto'];
                       <i class="bi bi-people"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>3,264</h6>
+                      <h6><?php echo $totalVote; ?></h6>
                       
                     </div>
                   </div>
@@ -107,7 +134,7 @@ $userPhoto = $_SESSION['userphoto'];
                       <i class="bi bi-hand-index"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>1244</h6>
+                      <h6><?php echo $votetoPollCount; ?></h6>
                      
                     </div>
                   </div>
@@ -139,59 +166,55 @@ $userPhoto = $_SESSION['userphoto'];
 
                   <!-- Line Chart -->
                   <div id="reportsChart"></div>
-
+                  <canvas id="myChart" width="400" height="400"></canvas>
                   <script>
-                    document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Sales',
-                          data: [31, 40, 28, 51, 42, 82, 56],
-                        }, {
-                          name: 'Revenue',
-                          data: [11, 32, 45, 32, 34, 52, 41]
-                        }, {
-                          name: 'Customers',
-                          data: [15, 11, 32, 18, 9, 24, 11]
-                        }],
-                        chart: {
-                          height: 350,
-                          type: 'area',
-                          toolbar: {
-                            show: false
-                          },
-                        },
-                        markers: {
-                          size: 4
-                        },
-                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                        fill: {
-                          type: "gradient",
-                          gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.3,
-                            opacityTo: 0.4,
-                            stops: [0, 90, 100]
-                          }
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          type: 'datetime',
-                          categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                        },
-                        tooltip: {
-                          x: {
-                            format: 'dd/MM/yy HH:mm'
-                          },
-                        }
-                      }).render();
-                    });
-                  </script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Your data for the chart
+        const data = {
+            labels: ['Vote Polled', 'Total Vote', 'Vote To Poll'],
+            datasets: [
+                {
+                    label: 'Count',
+                    data: [
+                        <?php echo $votePolledCount; ?>,
+                        <?php echo $totalVote; ?>,
+                        <?php echo $votetoPollCount; ?>,
+                    ],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        // Chart configuration
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        };
+
+        // Create and render the chart
+        const myChart = new Chart(ctx, config);
+    });
+</script>
+
                   <!-- End Line Chart -->
 
                 </div>
@@ -220,7 +243,7 @@ $userPhoto = $_SESSION['userphoto'];
 
   <!-- Vendor JS Files -->
  <?php include 'jslinks.php'?>
-
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>

@@ -8,47 +8,51 @@ $candidateRegno = $_GET['candidate_regno'] ?? '';
 $candidateShift = $_GET['candidate_shift'] ?? '';
 $voterName = $_SESSION['uname'] ?? '';
 
-$error = ''; 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $voterPassword = $_POST['voter_password'];
-    
 
     $voterQuery = "SELECT * FROM voterlist WHERE name = '$voterName' AND password = '$voterPassword'";
-
-    echo "Voter Query: $voterQuery<br>";
-
     $voterResult = mysqli_query($conn, $voterQuery);
 
     if ($voterResult) {
-        echo "Number of rows returned: " . mysqli_num_rows($voterResult) . "<br>";
-
         if (mysqli_num_rows($voterResult) === 1) {
             $updateQuery = "UPDATE voterlist SET votepolling = 1 WHERE name = '$voterName'";
             $updateResult = mysqli_query($conn, $updateQuery);
 
             if ($updateResult) {
-                // Store voting details in a result table
-                $insertResultQuery = "UPDATE voting_results SET votespolled = votespolled+1 WHERE candidate_name = '$candidateName'";
-                $insertResultResult = mysqli_query($conn, $insertResultQuery);
+                $votesQuery = "SELECT votespolled FROM result WHERE cregno = '$candidateRegno'";
+                echo $votesQuery; 
+                $votesResult = mysqli_query($conn, $votesQuery);
 
-                if ($insertResultResult) {
-                    header("Location: popup.php");
-                    exit();
+                if ($votesResult && mysqli_num_rows($votesResult) === 1) {
+                    $row = mysqli_fetch_assoc($votesResult);
+                    $votes = $row['votespolled'];
+                    $votes += 1;
+
+                    $updateVotesQuery = "UPDATE result SET votespolled = $votes WHERE cregno = '$candidateRegno'";
+                    $updateVotesResult = mysqli_query($conn, $updateVotesQuery);
+
+                    if ($updateVotesResult) {
+                        header("Location: popup.php");
+                        exit();
+                    } else {
+                        $error = "Failed to update vote count: " . mysqli_error($conn);
+                    }
                 } else {
-                    $error = "Insert into voting_results table failed: " . mysqli_error($conn);
+                    $error = "Failed to fetch current vote count: " . mysqli_error($conn);
                 }
-            } else {
-                $error = "Update failed: " . mysqli_error($conn);
             }
         } else {
-            echo "Voter authentication unsuccessful.<br>";
-            $error = "Invalid voter's credentials";
+            $error = "Invalid Password";
         }
     } else {
         echo "Database Error: " . mysqli_error($conn) . "<br>";
         $error = "Voter query failed: " . mysqli_error($conn);
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

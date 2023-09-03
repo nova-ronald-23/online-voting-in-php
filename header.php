@@ -14,13 +14,13 @@
     <li class="nav">
 
       <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-      <img src="data:image/jpeg;base64,<?php echo base64_encode($row['userimage']); ?>"  alt="Profile" class="rounded-circle"width="15" height="10" >
-        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $regno; ?></span>
+      <img src="data:image/jpeg;base64,<?php echo base64_encode($row['userimage']); ?>"  class="img-profile rounded-circle" >
+      <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $uname ; ?></span>
       </a><!-- End Profile Iamge Icon -->
 
       <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li class="dropdown-header">
-          <h6><?php echo $uname; ?></h6>
+          <h6><?php echo $regno; ?></h6>
           <span><?php echo $position; ?></span>
 
         <li>

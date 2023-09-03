@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($stmt !== null && $stmt !== false) {
-        // Bind the parameters here
         $stmt->bind_param("ss", $regno, $password);
 
         if (!$stmt->execute()) {
@@ -37,28 +36,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $result->fetch_assoc();
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['regno'] = $regno;
-            $_SESSION['uname'] = $row['name'];
+            $_SESSION['uname'] = $thirdLetter == 'U' ? $row['name'] : $row['uname'];
             $_SESSION['password'] = $password;
             $_SESSION['position'] = $row['position'];
             $_SESSION['userphoto'] = $row['userimage'];
-            
+
             if ($thirdLetter == 'U' && $row['votepolling'] == 1) {
                 $alreadyVotedMessage = "You have already polled your vote.";
             } else {
                 // Redirect based on position
-                if ($_SESSION['position'] == "admin") {
-                    header("Location: admin/adminindex.php");
-                } elseif ($_SESSION['position'] == "tech") {
-                    header("Location: techdesh.php");
-                } elseif ($_SESSION['position'] == "stud") {
-                    header("Location: stud.php");
-                } else {
-                    header("Location: login.php?error=1");
+                switch ($_SESSION['position']) {
+                    case "admin":
+                        header("Location: admin/adminindex.php");
+                        break;
+                    case "tech":
+                        header("Location: techdesh.php");
+                        break;
+                    case "stud":
+                        header("Location: stud.php");
+                        break;
+                    default:
+                        header("Location: login.php?error=1");
+                        break;
                 }
                 exit();
             }
         } else {
-            $regnoError = "Invalid Reg no or Password";
             $passwordError = "Invalid Reg no or Password";
         }
 
