@@ -1,31 +1,63 @@
-    <?php
-    session_start();
+<?php
+session_start();
 
-    include 'dbcon.php';
+include 'dbcon.php';
 
-    if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto'])) {
-        header("Location: ../login.php");
-        exit();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSION['uname']) || !isset($_SESSION['position']) || !isset($_SESSION['userphoto'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$regno = $_SESSION['regno'];
+$uname = $_SESSION['uname'];
+$position = $_SESSION['position'];
+$userPhoto = $_SESSION['userphoto'];
+
+$stmt_shift1 = $conn->prepare("SELECT departmentname FROM department WHERE shift = 'I'");
+if ($stmt_shift1 === false) {
+    die("Error in shiftI.php query: " . $conn->error);
+}
+
+if (!$stmt_shift1->execute()) {
+    die("Error executing shiftI.php query: " . $stmt_shift1->error);
+}
+
+$result_shift1 = $stmt_shift1->get_result();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $departmentName = $_POST['departmentName'];
+    $shift = 'I'; // Hardcoding shift to 'I'
+    $dcode = $_POST['dcode'];
+
+    // Check if the dcode field has exactly three characters
+    if (strlen($dcode) === 3) {
+        $stmt = $conn->prepare("INSERT INTO department (departmentname, shift, dcode) VALUES (?, ?, ?)");
+
+        if ($stmt === false) {
+            die("Error preparing SQL statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("sss", $departmentName, $shift, $dcode);
+
+        if ($stmt->execute()) {
+            // Department added successfully
+            header("Location: shiftI.php");
+            exit();
+        } else {
+            // Error occurred while adding department
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    } else {
+        // Display an error message for an invalid dcode
+        echo "Department Code must be exactly three characters.";
     }
+}
 
-    $user_id = $_SESSION['user_id'];
-    $regno = $_SESSION['regno'];
-    $uname = $_SESSION['uname'];
-    $position = $_SESSION['position'];
-    $userPhoto = $_SESSION['userphoto'];
-
-
-    $stmt_shift1 = $conn->prepare("SELECT departmentname FROM department WHERE shift = 'I'" );
-    if ($stmt_shift1 === false) {
-        die("Error in shiftI.php query: " . $conn->error);
-    }
-
-    if (!$stmt_shift1->execute()) {
-        die("Error executing shiftI.php query: " . $stmt_shift1->error);
-    }
-
-    $result_shift1 = $stmt_shift1->get_result();
-    ?>
+$conn->close();
+?>
 
     <!DOCTYPE html>
     <html>
@@ -96,7 +128,7 @@
             <h1>Shift I Departments</h1>
             <section class="section">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Department List</h5>
@@ -112,23 +144,40 @@
                     </div>
                 </div>
             
-            <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addDepartmentModalLabel">Add Department to Shift I</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            
+                
+           
+<div class="col-8">
+              <div class="card recent-sales overflow-auto">
+
+           
+
+                <div class="card-body">
+                  <h5 class="card-title">Add Department to Shift I </h5>
+                     <form method="post"> 
+                <div class="mb-3">
+                    <label for="departmentName" class="form-label">Department Name</label>
+                    <input type="text" class="form-control" id="departmentName" name="departmentName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="shift" class="form-label">Shift</label>
+                    <input type="text" class="form-control" id="Shift" name="Shift"value="I" required>
+                 
+               
+                </div>
+                <div class="mb-3">
+    <label for="dcode" class="form-label">Department Code </label>
+    <input type="text" class="form-control" id="dcode" name="dcode" maxlength="3" required>
+</div>
+                <button type="submit" class="btn btn-primary">Add Department</button>
+            </form>
+                 
+
+                </div>
+
+              </div>
             </div>
-            <div class="modal-body">
-              
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add Department</button>
-            </div>
-        </div>
-    </div>
-</div></section>
+</section>
         </main>
         <?php include 'footer.php'?>
         <?php include 'jslinks.php'?>

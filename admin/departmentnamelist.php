@@ -32,6 +32,7 @@ if (isset($_GET['dept'])) {
     
     $result_candidates = $stmt_candidates->get_result();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -92,6 +93,10 @@ if (isset($_GET['dept'])) {
     <main id="main" class="main">
     <h1><?php echo $department; ?> list</h1>
     <?php if ($result_candidates->num_rows > 0) { ?>
+        <form method="post" action="reset_votes.php">
+                <input type="hidden" name="departmentname" value="<?php echo $department; ?>">
+                <button type="submit" name="reset_votes" class="btn btn-warning">Reset Votes</button>
+            </form>
         <table class="table">
                 <thead>
                     <tr>
@@ -114,9 +119,11 @@ if (isset($_GET['dept'])) {
                     <?php } ?>
                 </tbody>
             </table>
-        <?php } else { ?>
-            <p>No candidates found for <?php echo $department; ?></p>
-        <?php } ?>
+            <!-- Add the "Reset Votes" button here -->
+        
+    <?php } else { ?>
+        <p>No candidates found for <?php echo $department; ?></p>
+    <?php } ?>
     </main>
     <?php include 'footer.php'?>
     <?php include 'jslinks.php'?>

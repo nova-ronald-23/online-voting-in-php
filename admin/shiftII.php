@@ -23,7 +23,41 @@
         die("Error executing shiftII.php query: " . $stmt_shift2->error);
     }
     
-    $result_shift2 = $stmt_shift2->get_result();?>
+    $result_shift2 = $stmt_shift2->get_result();
+    
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $departmentName = $_POST['departmentName'];
+    $shift = 'II'; // Hardcoding shift to 'I'
+    $dcode = $_POST['dcode'];
+
+    // Check if the dcode field has exactly three characters
+    if (strlen($dcode) === 3) {
+        $stmt = $conn->prepare("INSERT INTO department (departmentname, shift, dcode) VALUES (?, ?, ?)");
+
+        if ($stmt === false) {
+            die("Error preparing SQL statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("sss", $departmentName, $shift, $dcode);
+
+        if ($stmt->execute()) {
+            
+            header("Location: shiftII.php");
+            exit();
+        } else {
+            
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
+    } else {
+       
+        echo "Department Code must be exactly three characters.";
+    }
+}
+
+$conn->close();
+?>
 
     <!DOCTYPE html>
     <html>
@@ -106,6 +140,38 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+                     
+<div class="col-8">
+              <div class="card recent-sales overflow-auto">
+
+           
+
+                <div class="card-body">
+                  <h5 class="card-title">Add Department to Shift II </h5>
+                     <form method="post"> 
+                <div class="mb-3">
+                    <label for="departmentName" class="form-label">Department Name</label>
+                    <input type="text" class="form-control" id="departmentName" name="departmentName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="shift" class="form-label">Shift</label>
+                    <input type="text" class="form-control" id="Shift" name="Shift"value="II" required>
+                 
+               
+                </div>
+                <div class="mb-3">
+    <label for="dcode" class="form-label">Department Code </label>
+    <input type="text" class="form-control" id="dcode" name="dcode" maxlength="3" required>
+</div>
+                <button type="submit" class="btn btn-primary">Add Department</button>
+            </form>
+                 
+
+                </div>
+
+              </div>
             </div>
         </section>
     </main>
