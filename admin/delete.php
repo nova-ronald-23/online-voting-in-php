@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSI
 if (isset($_GET['id'])) {
     $candidate_id = $_GET['id'];
     
-    // Delete candidate from the database
     $stmt_delete = $conn->prepare("DELETE FROM voterlist WHERE id = ?");
     
     if ($stmt_delete === false) {
@@ -22,11 +21,8 @@ if (isset($_GET['id'])) {
     if (!$stmt_delete->execute()) {
         die("Error executing the statement: " . $stmt_delete->error);
     }
-    
-    // Set a session variable to indicate deletion
     $_SESSION['candidate_deleted'] = true;
     
-    // Redirect back to the department list page
     header("Location: departmentnamelist.php?dept=" . $_GET['dept']);
     exit();
 }
@@ -39,11 +35,9 @@ if (isset($_GET['id'])) {
 </head>
 <body>
     <?php include 'header.php'?>
-    <!-- Display a confirmation message or UI here if needed -->
     <?php include 'footer.php'?>
     <?php include 'jslinks.php'?>
     <script>
-        // Display an alert and then redirect
         alert("Candidate deleted successfully!");
         window.location.href = "departmentnamelist.php?dept=<?php echo $_GET['dept']; ?>";
     </script>

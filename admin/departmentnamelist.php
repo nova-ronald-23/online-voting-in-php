@@ -79,12 +79,12 @@ if (isset($_GET['dept'])) {
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-            <a href="">
+            <a href="nomenilistI.php">
             <i class="bi bi-circle"></i><span>Shitf I</span>
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="nomenilistII.php">
             <i class="bi bi-circle"></i><span>Shitf II</span>
             </a>
         </ul>
@@ -119,7 +119,17 @@ if (isset($_GET['dept'])) {
                     <?php } ?>
                 </tbody>
             </table>
-            <!-- Add the "Reset Votes" button here -->
+            <div class="col-8">
+              <div class="card recent-sales overflow-auto">
+
+           
+
+                <div class="card-body">
+                <h2>Upload Student List</h2>
+    <form enctype="multipart/form-data" action="upload.php" method="post">
+        <input type="file" name="file" accept=".csv, .xlsx">
+        <input type="submit" value="Upload">
+    </form>
         
     <?php } else { ?>
         <p>No candidates found for <?php echo $department; ?></p>

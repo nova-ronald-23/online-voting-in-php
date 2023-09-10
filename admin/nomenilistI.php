@@ -50,7 +50,7 @@
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-menu-button-wide"></i><span>Department</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="components-nav" class="nav-content collapse show " data-bs-parent="#sidebar-nav">
+        <ul id="components-nav" class="nav-content collapse  " data-bs-parent="#sidebar-nav">
         <li>
             <a href="shiftI.php"  >
             <i class="bi bi-circle"></i><span>Shitf I</span>
@@ -63,16 +63,16 @@
         </li>
         
         </ul>
-    </li><!-- End Components Nav -->
+    </li>
 
     <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-journal-text"></i><span>Candidate</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
         <li>
-            <a href="nomenilistI.php">
-            <i class="bi bi-circle" class="active"></i><span>Shitf I</span>
+            <a href="nomenilistI.php" class="active">
+            <i class="bi bi-circle" ></i><span>Shitf I</span>
             </a>
         </li>
         <li>
@@ -88,7 +88,7 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="adminindex.php">Dashboard</a></li>
-                        <li class="breadcrumb-item">Department</li>
+                        <li class="breadcrumb-item">Candidate</li>
                         <li class="breadcrumb-item active">Shift I</li>
                     </ol>
                 </nav>
@@ -102,7 +102,7 @@
                                 <h5 class="card-title">Department List</h5>
                                 <ul>
                                  <?php while ($row_shift1 = $result_shift1->fetch_assoc()) { ?>
-                                   <li><a href="departmentnamelist.php?dept=<?php echo $row_shift1['departmentname']; ?>"><?php echo $row_shift1['departmentname']; ?></a></li>
+                                   <li><a href="candidateadd.php?dept=<?php echo $row_shift1['departmentname']; ?>"><?php echo $row_shift1['departmentname']; ?></a></li>
                                      <?php } ?>
                                         </ul>
 
