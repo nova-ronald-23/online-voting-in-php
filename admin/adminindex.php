@@ -44,7 +44,7 @@ if ($countResult && mysqli_num_rows($countResult) === 1) {
 $votePolledQuery = "SELECT COUNT(*) AS votePolledCount FROM voterlist WHERE votepolling = 1";
 $votePolledResult = mysqli_query($conn, $votePolledQuery);
 
-$votePolledCount = 0; // Initialize the variable
+$votePolledCount = 0; 
 
 if ($votePolledResult && mysqli_num_rows($votePolledResult) === 1) {
     $row = mysqli_fetch_assoc($votePolledResult);
@@ -53,7 +53,7 @@ if ($votePolledResult && mysqli_num_rows($votePolledResult) === 1) {
 $votetoPollQuery = "SELECT COUNT(*) AS votetoPollCount FROM voterlist WHERE votepolling = 0";
 $votetoPollResult = mysqli_query($conn, $votetoPollQuery);
 
-$votetoPollCount = 0; // Initialize the variable
+$votetoPollCount = 0; 
 
 if ($votetoPollResult && mysqli_num_rows($votePolledResult) === 1) {
     $row = mysqli_fetch_assoc($votetoPollResult);

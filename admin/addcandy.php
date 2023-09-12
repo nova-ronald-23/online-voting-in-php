@@ -9,36 +9,35 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSI
 
 if (isset($_GET['id'])) {
     $candidate_id = $_GET['id'];
-    
+
+    // Update the "nomenation" field in the "voterlist" table
     $stmt_add = $conn->prepare("UPDATE  voterlist SET nomenation=1 WHERE id = ?");
-    
+
     if ($stmt_add === false) {
         die("Error in preparing the statement: " . $conn->error);
     }
-    
+
     $stmt_add->bind_param("i", $candidate_id);
-    
+
     if (!$stmt_add->execute()) {
         die("Error executing the statement: " . $stmt_add->error);
     }
-    $_SESSION['candidate_add'] = true;
+
+    // Now, insert the nominated candidate's details into the "result" table
+    $stmt_insert_result = $conn->prepare("INSERT INTO result (candidate_name, cregno, departmentname, shift, votespolled) SELECT  name, regno, departmentname, shift, 0 FROM voterlist WHERE id = ?");
     
+    if ($stmt_insert_result === false) {
+        die("Error in preparing the statement: " . $conn->error);
+    }
+
+    $stmt_insert_result->bind_param("i", $candidate_id);
+
+    if (!$stmt_insert_result->execute()) {
+        die("Error inserting result: " . $stmt_insert_result->error);
+    }
+
+    $_SESSION['candidate_add'] = true;
+    header("Location: candidateadd.php?dept=" . $_GET['dept']);
     exit();
 }
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>add Candidate</title>
-    <?php include 'links.php'?>
-</head>
-<body>
-    <?php include 'header.php'?>
-    <?php include 'footer.php'?>
-    <?php include 'jslinks.php'?>
-    <script>
-        alert("Candidate added successfully!");
-        ; 
-    </script>
-</body>
-</html>

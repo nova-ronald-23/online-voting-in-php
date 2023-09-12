@@ -14,17 +14,19 @@
     $position = $_SESSION['position'];
     $userPhoto = $_SESSION['userphoto'];
 
+    $sql = "SELECT candidate_name, cregno, MAX(votespolled) AS max_votes FROM result WHERE shift = 'Shift I' GROUP BY departmentname";
+$result = $conn->query($sql);
 
-    $stmt_shift1 = $conn->prepare("SELECT departmentname FROM department WHERE shift = 'I'" );
-    if ($stmt_shift1 === false) {
-        die("Error in shiftI.php query: " . $conn->error);
+// Create an associative array to store the winners
+$winners = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $winners[] = $row;
     }
+}
 
-    if (!$stmt_shift1->execute()) {
-        die("Error executing shiftI.php query: " . $stmt_shift1->error);
-    }
 
-    $result_shift1 = $stmt_shift1->get_result();
     ?>
 
     <!DOCTYPE html>
@@ -69,9 +71,9 @@
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-journal-text"></i><span>Candidate</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-            <a href="nomenilistI.php" class="active">
+            <a href="nomenilistI.php" >
             <i class="bi bi-circle" ></i><span>Shitf I</span>
             </a>
         </li>
@@ -85,9 +87,9 @@
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
           <i class="bx bxs-medal"></i><span>Result</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="icons-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
           <li>
-            <a href="resultI.php">
+            <a href="resultI.php" class="active" >
               <i class="bi bi-circle"></i><span>shiftI</span>
             </a>
           </li>
@@ -101,51 +103,33 @@
     </aside>
     <main id="main" class="main">
             <div class="pagetitle">
-                <h1>Shift I</h1>
+                <h1>Shift I Winner List</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="adminindex.php">Dashboard</a></li>
-                        <li class="breadcrumb-item">Candidate</li>
+                        <li class="breadcrumb-item">result</li>
                         <li class="breadcrumb-item active">Shift I</li>
                     </ol>
                 </nav>
-            </div>
-            <h1>Shift I Departments</h1>
-            <section class="section">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Department List</h5>
-                                <ul>
-                                 <?php while ($row_shift1 = $result_shift1->fetch_assoc()) { ?>
-                                   <li><a href="candidateadd.php?dept=<?php echo $row_shift1['departmentname']; ?>"><?php echo $row_shift1['departmentname']; ?></a></li>
-                                     <?php } ?>
-                                        </ul>
-
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
-            <div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addDepartmentModalLabel">Add Department to Shift I</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add Department</button>
-            </div>
-        </div>
-    </div>
-</div></section>
+            </div> 
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Register Number</th>
+                    <th>Votes Polled</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($winners as $winner) { ?>
+                    <tr>
+                       <td><?php echo $winner['candidate_name'] ?></td>
+                        <td><?php echo $winner['cregno'] ?></td>
+                        <td><?php echo $winner['max_votes'] ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
         </main>
         <?php include 'footer.php'?>
         <?php include 'jslinks.php'?>
