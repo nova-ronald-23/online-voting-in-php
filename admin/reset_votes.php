@@ -8,6 +8,7 @@ if (isset($_POST['reset_votes']) && isset($_POST['departmentname'])) {
 
     // Write SQL code to reset the votes for all candidates in the specified department
     $sql = "UPDATE voterlist SET votepolling = 0 WHERE departmentname = ?";
+   
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -21,17 +22,33 @@ if (isset($_POST['reset_votes']) && isset($_POST['departmentname'])) {
         die("Error executing the statement: " . $stmt->error);
     }
 
-    // Close the prepared statement
+    
     $stmt->close();
 
-    // Close the database connection
+    $sql ="UPDATE result set votespolled =0 WHERE departmentname =?";
+    $up = $conn->prepare($sql);
+
+    if ($up === false) {
+        die("Error in preparing the statement: " . $conn->error);
+    }
+
+   
+    $up->bind_param("s", $departmentname);
+
+    if (!$up->execute()) {
+        die("Error executing the statement: " . $up->error);
+    }
+
+    
+    $up->close();
+
     $conn->close();
 
-    // Redirect back to the candidates.php page
+
     header("Location: departmentnamelist.php?dept=" . urlencode($departmentname));
     exit();
 } else {
-    // Redirect to an error page or display an error message
+  
     echo "Invalid request.";
 }
 ?>

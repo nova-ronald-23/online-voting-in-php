@@ -13,14 +13,25 @@
     $uname = $_SESSION['uname'];
     $position = $_SESSION['position'];
     $userPhoto = $_SESSION['userphoto'];
-
+    $sql = "SELECT candidate_name, cregno, MAX(votespolled) AS max_votes FROM result WHERE shift = 'II' GROUP BY departmentname";
+    $result = $conn->query($sql);
+    
+    // Create an associative array to store the winners
+    $winners = [];
+    
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $winners[] = $row;
+        }
+    }
+    
 
     ?>
 
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Shift I</title>
+        <title>Shift II</title>
         <?php include 'links.php'?>
     </head>
     <body>
@@ -101,27 +112,24 @@
                 </nav>
             </div>
             <table class="table">
-                <thead>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Register Number</th>
+                    <th>Votes Polled</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($winners as $winner) { ?>
                     <tr>
-                        <th>Student Photo</th>
-                        <th>Student Name</th>
-                        <th>Register Number</th>
-                        <th>votes polled</th>
+                       <td><?php echo $winner['candidate_name'] ?></td>
+                        <td><?php echo $winner['cregno'] ?></td>
+                        <td><?php echo $winner['max_votes'] ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    
-                        <tr>
-                        <td></td>
-                            <td><?php  ?></td>
-                            <td><?php  ?></td>
-                            <td><?php ?></td>
-                            <td><?php ?></td>
-                            
-                        </tr>
-              
-                </tbody>
-            </table>
+                <?php } ?>
+            </tbody>
+        </table>
+        <button id="printButton" class="btn btn-primary">Print PDF</button>
 
         </main>
         <?php include 'footer.php'?>

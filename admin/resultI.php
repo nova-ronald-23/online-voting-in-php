@@ -14,7 +14,7 @@
     $position = $_SESSION['position'];
     $userPhoto = $_SESSION['userphoto'];
 
-    $sql = "SELECT candidate_name, cregno, MAX(votespolled) AS max_votes FROM result WHERE shift = 'Shift I' GROUP BY departmentname";
+    $sql = "SELECT candidate_name, cregno, MAX(votespolled) AS max_votes FROM result WHERE shift = 'I' GROUP BY departmentname";
 $result = $conn->query($sql);
 
 // Create an associative array to store the winners
@@ -34,6 +34,8 @@ if ($result->num_rows > 0) {
     <head>
         <title>Shift I</title>
         <?php include 'links.php'?>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <script src="jspdf.js"></script>
     </head>
     <body>
         <?php include 'header.php'?>
@@ -130,8 +132,29 @@ if ($result->num_rows > 0) {
                 <?php } ?>
             </tbody>
         </table>
+        <button id="printButton" class="btn btn-primary">Print PDF</button>
         </main>
         <?php include 'footer.php'?>
         <?php include 'jslinks.php'?>
+        
+        <script>
+  
+  function generatePDF() {
+    const doc = new jspdf();
+    doc.text("Shift I Winner List", 10, 10);
+    doc.autoTable({
+      head: [['Student Name', 'Register Number', 'Votes Polled']],
+      body: [
+        <?php foreach ($winners as $winner) { ?>
+          ['<?php echo $winner['candidate_name'] ?>', '<?php echo $winner['cregno'] ?>', '<?php echo $winner['max_votes'] ?>'],
+        <?php } ?>
+      ],
+    });
+    const pdfDataUri = doc.output('datauristring');
+    window.open(pdfDataUri, '_blank');
+  }
+  document.getElementById('printButton').addEventListener('click', generatePDF);
+</script>
+
     </body>
     </html>
