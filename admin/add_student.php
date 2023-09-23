@@ -17,7 +17,7 @@ $department = $_POST['departmentname'];  // Get department from the form
 $name = $_POST['name'];
 $regno = $_POST['regno'];
 $password = $_POST['password'];
-$shift = isset($_POST['shift']) ? $_POST['shift'] : '';
+$shift = $_POST['shift'];
 
 // Output the "shift" value for debugging purposes
 echo "Shift: " . $shift;
