@@ -128,8 +128,20 @@ if (isset($_GET['dept'])) {
                         <td><img src="data:image/jpeg;base64,<?php echo base64_encode($row_candidate['userimage']); ?>" alt="Candidate Image" width="100" height="100"></td>
                             <td><?php echo $row_candidate['name']; ?></td>
                             <td><?php echo $row_candidate['regno']; ?></td>
-                            <td><?php echo $row_candidate['votepolling']; ?></td>
-                            <td><?php echo $row_candidate['nomenation']; ?></td>
+                            <td><?php
+                                        if ($row_candidate['votepolling'] == 1) {
+                                            echo "votepolled";
+                                        } else {
+                                            echo "not polled";
+                                        }
+                                        ?></td></td>
+                            <td><?php
+                                        if ($row_candidate['nomenation'] == 1) {
+                                            echo "nomenated";
+                                        } else {
+                                            echo "not nomenated";
+                                        }
+                                        ?></td></td>
                             <td><a href="addcandy.php?id=<?php echo $row_candidate['id']; ?>"><button type="button" class="btn btn-success rounded-pill">Add</button></a>
                             <a href="removecandy.php?id=<?php echo $row_candidate['id']; ?>"><button type="button" class="btn btn-danger rounded-pill">Remove</button></a></td>
                         </tr>

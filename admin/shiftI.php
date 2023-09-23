@@ -27,10 +27,9 @@ $result_shift1 = $stmt_shift1->get_result();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $departmentName = $_POST['departmentName'];
-    $shift = 'I'; // Hardcoding shift to 'I'
+    $shift = 'I'; 
     $dcode = $_POST['dcode'];
 
-    // Check if the dcode field has exactly three characters
     if (strlen($dcode) === 3) {
         $stmt = $conn->prepare("INSERT INTO department (departmentname, shift, dcode) VALUES (?, ?, ?)");
 
@@ -41,17 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("sss", $departmentName, $shift, $dcode);
 
         if ($stmt->execute()) {
-            // Department added successfully
             header("Location: shiftI.php");
             exit();
         } else {
-            // Error occurred while adding department
             echo "Error: " . $stmt->error;
         }
 
         $stmt->close();
     } else {
-        // Display an error message for an invalid dcode
         echo "Department Code must be exactly three characters.";
     }
 }
@@ -151,13 +147,22 @@ $conn->close();
                                 <h5 class="card-title">Department List</h5>
                                 <ul>
                                  <?php while ($row_shift1 = $result_shift1->fetch_assoc()) { ?>
-                                   <li><a href="departmentnamelist.php?dept=<?php echo $row_shift1['departmentname']; ?>"><?php echo $row_shift1['departmentname']; ?></a></li>
+                                   <li><a href="departmentnamelist.php?dept=<?php echo $row_shift1['departmentname']; ?>&shift=I"><?php echo $row_shift1['departmentname']; ?></a></li>
                                      <?php } ?>
                                         </ul>
 
                                 
                             </div>
+                            <center>
+            <form method="post" >
+       
+<a href="shiftIbackup.php?department=ShiftI" class="btn btn-warning">Backup and Reset</a>
+
+            </form>
+                                    </center>
+                                    <br/>
                         </div>
+                        
                     </div>
                 </div>
             
@@ -185,8 +190,16 @@ $conn->close();
                 <div class="mb-3">
     <label for="dcode" class="form-label">Department Code </label>
     <input type="text" class="form-control" id="dcode" name="dcode" maxlength="3" required>
+    
+    <h5>Upload Student List</h5>
+                        <input type="file" name="file" accept=".csv, .xlsx">
 </div>
                 <button type="submit" class="btn btn-primary">Add Department</button>
+           
+
+             
+                     
+                
             </form>
                  
 
@@ -198,5 +211,6 @@ $conn->close();
         </main>
         <?php include 'footer.php'?>
         <?php include 'jslinks.php'?>
+       
     </body>
     </html>

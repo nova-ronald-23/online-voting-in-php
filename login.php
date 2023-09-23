@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt = null;
 
-    if ($thirdLetter == 'U') {
+    if ($thirdLetter == 'U' || $thirdLetter == 'P') {
         $voterQuery = "SELECT id, name, password, position, userimage, votepolling FROM voterlist WHERE regno = ? AND password = ?";
         $stmt = $conn->prepare($voterQuery);
     } elseif ($thirdLetter == 'A' || $thirdLetter == 'F') {

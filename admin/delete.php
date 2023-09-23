@@ -23,7 +23,7 @@ if (isset($_GET['id'])) {
     }
     $_SESSION['candidate_deleted'] = true;
     
-    header("Location: departmentnamelist.php?dept=" . $_GET['dept']);
+    header("Location: ".$_SERVER['HTTP_REFERER']);
     exit();
 }
 ?>
@@ -39,7 +39,6 @@ if (isset($_GET['id'])) {
     <?php include 'jslinks.php'?>
     <script>
         alert("Candidate deleted successfully!");
-        window.location.href = "departmentnamelist.php?dept=<?php echo $_GET['dept']; ?>";
     </script>
 </body>
 </html>

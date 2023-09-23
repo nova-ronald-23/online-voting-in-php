@@ -13,7 +13,7 @@
 <li class="nav">
 
 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-<img src="data:image/jpeg;base64,<?php echo base64_encode($row_candidate['userimage']); ?>"  class="img-profile rounded-circle"  >
+  <img src="displayimage.php" class="img-profile rounded-circle" alt="Profile Image">
   <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $regno; ?></span>
 </a><!-- End Profile Iamge Icon -->
 

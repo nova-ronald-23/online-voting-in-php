@@ -1,16 +1,16 @@
 <?php
-include 'dbcon.php';
+include 'admin/dbcon.php';
 
-if (isset($_GET['id'])) {
-    $candidate_id = $_GET['id'];
+if (isset($_GET['regno'])) {
+    $regno = $_GET['regno'];
     
-    $stmt_image = $conn->prepare("SELECT userimage FROM voterlist WHERE id = ?");
+    $stmt_image = $conn->prepare("SELECT userimage FROM voterlist WHERE regno = ?");
     
     if ($stmt_image === false) {
         die("Error in preparing the statement: " . $conn->error);
     }
     
-    $stmt_image->bind_param("i", $candidate_id);
+    $stmt_image->bind_param("s", $regno);
     
     if (!$stmt_image->execute()) {
         die("Error executing the statement: " . $stmt_image->error);
@@ -24,3 +24,4 @@ if (isset($_GET['id'])) {
         exit();
     }
 }
+?>

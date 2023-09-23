@@ -59,6 +59,7 @@ if ($votetoPollResult && mysqli_num_rows($votePolledResult) === 1) {
     $row = mysqli_fetch_assoc($votetoPollResult);
     $votetoPollCount = $row['votetoPollCount'];
 }
+
 ?>
  <?php include 'header.php'?>
 <?php include 'sidenav.php'?>

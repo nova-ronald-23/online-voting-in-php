@@ -24,7 +24,29 @@ $userPhoto = $_SESSION['userphoto'];
    
 </head>
 <body>
-   <?php include 'header.php'?>
+   <?php include 'admin/header.php'?>
+   <aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link " href="adminindex.php">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+        <li class="nav-item">
+            <a class="nav-link" href="attendance.php">
+                <i class="bi bi-journal-text"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="report.php">
+                <i class="bx bxs-medal"></i>
+                <span>Report</span>
+            </a>
+        </li>
+    </ul>
+   </aside>
    <?php include 'footer.php'?>
    <?php include 'jslinks.php'?>
 </body>

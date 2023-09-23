@@ -151,10 +151,18 @@ $conn->close();
                             <h5 class="card-title">Default</h5>
                             <ul>
                                 <?php while ($row_shift2 = $result_shift2->fetch_assoc()) { ?>
-                                    <li><a href="departmentnamelist.php?dept=<?php echo $row_shift2['departmentname']; ?>"><?php echo $row_shift2['departmentname']; ?></a></li>
+                                    <li><a href="departmentnamelist.php?dept=<?php echo $row_shift2['departmentname']; ?>&shift=II"><?php echo $row_shift2['departmentname']; ?></a></li>
                                 <?php } ?>
                             </ul>
                         </div>
+                        <center>
+            <form method="post" >
+       
+<a href="shiftIIbackup.php?department=ShiftI" class="btn btn-warning">Backup and Reset</a>
+
+            </form>
+                                    </center>
+                                    <br/>
                     </div>
                 </div>
             </div>
