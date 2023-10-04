@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         header("Location: techdesh.php");
                         break;
                     case "stud":
-                        header("Location: stud.php");
+                        header("Location: studdeshboard.php");
                         break;
                     default:
                         header("Location: login.php?error=1");

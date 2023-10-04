@@ -38,7 +38,7 @@ if ($userDataResult) {
 }
 
 // Fetch candidates who match department, shift, and nomination from the voterlist table
-$query = "SELECT name, userimage, regno FROM voterlist WHERE departmentname = ? AND shift = ? AND nomenation = 1";
+$query = "SELECT name, userimage, regno FROM candidates WHERE departmentname = ? AND shift = ?";
 $resultStmt = $conn->prepare($query);
 $resultStmt->bind_param("ss", $department, $shift);
 

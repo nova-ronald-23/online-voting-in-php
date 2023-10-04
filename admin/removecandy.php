@@ -10,9 +10,8 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['regno']) || !isset($_SESSI
 if (isset($_GET['id'])) {
     $candidate_id = $_GET['id'];
 
-    
     // First, remove the nomination status from the 'voterlist' table
-    $stmt_remove_nomination = $conn->prepare("UPDATE  voterlist SET nomenation=0 WHERE id = ?");
+    $stmt_remove_nomination = $conn->prepare("UPDATE voterlist SET nomenation = 0 WHERE id = ?");
     
     if ($stmt_remove_nomination === false) {
         die("Error in preparing the statement to remove nomination: " . $conn->error);
@@ -21,7 +20,7 @@ if (isset($_GET['id'])) {
     $stmt_remove_nomination->bind_param("i", $candidate_id);
     
     if (!$stmt_remove_nomination->execute()) {
-        die("Error executing the statement to remove nomination: " . $stmt_remove_nomination->error);
+        die("Error executing the statement to remove nomenation: " . $stmt_remove_nomination->error);
     }
 
     // Second, delete the corresponding row from the 'result' table
@@ -37,23 +36,19 @@ if (isset($_GET['id'])) {
         die("Error executing the statement to remove from result: " . $stmt_remove_result->error);
     }
     
-    // Insert the nominated candidate's details into the "candidate" table
-    $stmt_remove_candidate = $conn->prepare("DELETE FROM candidates WHERE candidate_name = (SELECT name FROM voterlist WHERE id = ?)");
+    // Third, delete the corresponding row from the 'candidates' table
+    $stmt_remove_candidate = $conn->prepare("DELETE FROM candidates WHERE id = ?");
 
     if ($stmt_remove_candidate === false) {
-        die("Error in preparing the statement: " . $conn->error);
+        die("Error in preparing the statement to remove from candidates: " . $conn->error);
     }
 
     $stmt_remove_candidate->bind_param("i", $candidate_id);
 
-    if (!$stmt_insert_candidate->execute()) {
-        die("Error inserting candidate: " . $stmt_insert_candidate->error);
+    if (!$stmt_remove_candidate->execute()) {
+        die("Error executing the statement to remove from candidates: " . $stmt_remove_candidate->error);
     }
 
-    $_SESSION['candidate_add'] = true;
-    header("Location: ".$_SERVER['HTTP_REFERER']);
-    exit();
-    
     $_SESSION['candidate_remove'] = true;
     header("Location: ".$_SERVER['HTTP_REFERER']);
     exit();
