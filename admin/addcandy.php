@@ -35,9 +35,26 @@ if (isset($_GET['id'])) {
     if (!$stmt_insert_result->execute()) {
         die("Error inserting result: " . $stmt_insert_result->error);
     }
+    
+    // Insert the nominated candidate's details into the "candidate" table
+    $stmt_insert_candidate = $conn->prepare("INSERT INTO candidates (name, regno, departmentname, shift) SELECT name, regno, departmentname, shift FROM voterlist WHERE id = ?");
+
+    if ($stmt_insert_candidate === false) {
+        die("Error in preparing the statement: " . $conn->error);
+    }
+
+    $stmt_insert_candidate->bind_param("i", $candidate_id);
+
+    if (!$stmt_insert_candidate->execute()) {
+        die("Error inserting candidate: " . $stmt_insert_candidate->error);
+    }
 
     $_SESSION['candidate_add'] = true;
-    header("Location: candidateadd.php?dept=" . $_GET['dept']);
+    header("Location: ".$_SERVER['HTTP_REFERER']);
+    exit();
+
+    $_SESSION['candidate_add'] = true;
+    header("Location: ".$_SERVER['HTTP_REFERER']);
     exit();
 }
 ?>

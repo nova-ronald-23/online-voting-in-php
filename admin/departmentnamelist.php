@@ -52,7 +52,7 @@ if (isset($_GET['dept'])) {
     <li class="nav-item">
         <a class="nav-link " href="adminindex.php">
         <i class="bi bi-grid"></i>
-        <span>Deshboard</span>
+        <span>Dashboard</span>
         </a>
     </li><!-- End Dashboard Nav -->
 
@@ -156,6 +156,7 @@ if (isset($_GET['dept'])) {
     <?php } else { ?>
         <p>No candidates found for <?php echo $department; ?></p>
     <?php } ?>
+    
     <div class="col-8">
     <div class="card recent-sales overflow-auto">
         <div class="card-body">
@@ -182,9 +183,9 @@ if (isset($_GET['dept'])) {
                     <label for="departmentName" class="form-label">Department Name</label>
                     <input type="text" class="form-control"name="departmentName" value="<?php echo $department; ?>" disabled>
                 </div>
-                <div class="mb-3">
+               <div class="mb-3">
                     <label for="shift" class="form-label">Shift</label>
-                    <input type="text" class="form-control"  name="shift" value="<?php echo $shift; ?>" disabled>
+                    <input type="text" class="form-control" name="shift" value="<?php echo $shift; ?>">
                 </div>
                 <button type="submit" name="add_student" class="btn btn-primary">Add Student</button>
             </form>

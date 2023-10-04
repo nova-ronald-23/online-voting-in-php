@@ -17,21 +17,30 @@ $department = $_POST['departmentname'];  // Get department from the form
 $name = $_POST['name'];
 $regno = $_POST['regno'];
 $password = $_POST['password'];
-$shift = $_POST['shift'];
+$shift = isset($_POST['shift']) ? $_POST['shift'] : ''; // Retrieve 'shift' from the form
 
-// Output the "shift" value for debugging purposes
-echo "Shift: " . $shift;
 $image = file_get_contents($_FILES['image']['tmp_name']); // Open the image file in binary mode
-$position= "stud";
+$position = "stud";
 
+// Generate JavaScript to output values to the console
+//echo "<script>";
+//echo "console.log('Name: $name');";
+//echo "console.log('Register Number: $regno');";
+//echo "console.log('Department: $department');";
+//echo "console.log('Image Size: " . strlen($image) . " bytes');";
+//echo "console.log('Position: $position');";
+//echo "console.log('Password: $password');";
+//echo "console.log('Shift: $shift');";
+//echo "</script>";
 // Prepare the SQL statement to insert data into the voterlist table
-$stmt = $conn->prepare("INSERT INTO voterlist (name, regno, departmentname, userimage,position,password,shift) VALUES (?,?,?,?,?,?,?)");
+$stmt = $conn->prepare("INSERT INTO voterlist (name, regno, departmentname, userimage, position, password, shift) VALUES (?, ?, ?, ?, ?, ?, ?)");
+//echo "POST parameters: " . json_encode($_POST);
 
 if ($stmt === false) {
     die("Error in preparing the statement: " . $conn->error);
 }
 
-$stmt->bind_param("sssssss", $name, $regno, $department, $image,$position,$password,$shift);
+$stmt->bind_param("sssssss", $name, $regno, $department, $image, $position, $password, $shift);
 
 if (!$stmt->execute()) {
     die("Error executing the statement: " . $stmt->error);
@@ -39,7 +48,6 @@ if (!$stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-    
 
 // Redirect to the previous page after adding the student
 header("Location: ".$_SERVER['HTTP_REFERER']);

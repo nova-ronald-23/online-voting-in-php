@@ -144,6 +144,7 @@ if ($votetoPollResult && mysqli_num_rows($votePolledResult) === 1) {
               </div>
 
             </div><!-- End Customers Card -->
+            
 
             <!-- Reports -->
             <div class="col-12">

@@ -50,7 +50,7 @@ if (isset($_GET['dept'])) {
     <li class="nav-item">
         <a class="nav-link " href="adminindex.php">
         <i class="bi bi-grid"></i>
-        <span>Deshboard</span>
+        <span>Dashboard</span>
         </a>
     </li><!-- End Dashboard Nav -->
 
@@ -130,18 +130,18 @@ if (isset($_GET['dept'])) {
                             <td><?php echo $row_candidate['regno']; ?></td>
                             <td><?php
                                         if ($row_candidate['votepolling'] == 1) {
-                                            echo "votepolled";
+                                        ?><span class="badge bg-success">vote polled</span><?php
                                         } else {
-                                            echo "not polled";
+                                           ?> <span class="badge bg-danger">not polled</span><?php
                                         }
-                                        ?></td></td>
+                                        ?></td>
                             <td><?php
                                         if ($row_candidate['nomenation'] == 1) {
-                                            echo "nomenated";
+                                            ?><span class="badge bg-success">Candidate</span><?php
                                         } else {
-                                            echo "not nomenated";
+                                           ?> <span class="badge bg-warning">Student</span><?php
                                         }
-                                        ?></td></td>
+                                        ?></td>
                             <td><a href="addcandy.php?id=<?php echo $row_candidate['id']; ?>"><button type="button" class="btn btn-success rounded-pill">Add</button></a>
                             <a href="removecandy.php?id=<?php echo $row_candidate['id']; ?>"><button type="button" class="btn btn-danger rounded-pill">Remove</button></a></td>
                         </tr>

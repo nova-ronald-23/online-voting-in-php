@@ -13,7 +13,8 @@
     $uname = $_SESSION['uname'];
     $position = $_SESSION['position'];
     $userPhoto = $_SESSION['userphoto'];
-    $sql = "SELECT candidate_name, cregno, MAX(votespolled) AS max_votes FROM result WHERE shift = 'II' GROUP BY departmentname";
+    $departmentname=$_SESSION['departmentname'];
+    $sql = "SELECT candidate_name, cregno,departmentname, MAX(votespolled) AS max_votes FROM result WHERE shift = 'II' GROUP BY departmentname";
     $result = $conn->query($sql);
     
     // Create an associative array to store the winners
@@ -116,6 +117,7 @@
                 <tr>
                     <th>Student Name</th>
                     <th>Register Number</th>
+                    <th>Department Name</th>
                     <th>Votes Polled</th>
                 </tr>
             </thead>
@@ -124,6 +126,7 @@
                     <tr>
                        <td><?php echo $winner['candidate_name'] ?></td>
                         <td><?php echo $winner['cregno'] ?></td>
+                        <td><?php echo $winner['departmentname']?></td>
                         <td><?php echo $winner['max_votes'] ?></td>
                     </tr>
                 <?php } ?>

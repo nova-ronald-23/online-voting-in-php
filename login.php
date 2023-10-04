@@ -36,12 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $result->fetch_assoc();
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['regno'] = $regno;
-            $_SESSION['uname'] = $thirdLetter == 'U' ? $row['name'] : $row['uname'];
+            $_SESSION['uname'] = ($thirdLetter == 'U' || $thirdLetter == 'P') ? $row['name'] : $row['uname'];
             $_SESSION['password'] = $password;
             $_SESSION['position'] = $row['position'];
             $_SESSION['userphoto'] = $row['userimage'];
 
-            if ($thirdLetter == 'U' && $row['votepolling'] == 1) {
+            if (($thirdLetter == 'U' || $thirdLetter == 'P') && $row['votepolling'] == 1) {
                 $alreadyVotedMessage = "You have already polled your vote.";
             } else {
                 // Redirect based on position
